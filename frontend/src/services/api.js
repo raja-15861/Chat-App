@@ -1,4 +1,4 @@
-const baseUrl="http://localhost:3000";
+const baseUrl="https://chat-app-jrjq.onrender.com";
 
 
 export const authEndpoints={
