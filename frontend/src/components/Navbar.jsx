@@ -5,9 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Logout } from '../services/Operations/auth';
 
 function Navbar() {
-  const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.user?.user);
-  const isLoggedIn = Boolean(token || localStorage.getItem("token"));
+  // Real session indicator: user is only populated after a successful server-verified
+  // login/signup/checkAuth. The localStorage "user" is set by those same flows.
+  const isLoggedIn = Boolean(user || localStorage.getItem("user"));
 
   const dispatch = useDispatch();
   const handleLogout = () => {
