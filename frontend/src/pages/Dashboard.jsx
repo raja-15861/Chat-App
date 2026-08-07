@@ -24,10 +24,18 @@ function Dashboard() {
               <div className="camera" />
               <div className="display bg-base-100">
                 <div className="artboard artboard-demo phone-1 bg-base-100 p-4 flex flex-col justify-between">
-                  <div className="flex items-center gap-3 border-b border-base-300 pb-3">
+<div className="flex items-center gap-3 border-b border-base-300 pb-3">
                     <div className="avatar">
-                      <div className="w-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">
-                        {user?.fullName?.[0]?.toUpperCase() || "U"}
+                      <div className="w-10 rounded-full">
+                        <img
+                          src={
+                            user?.image ||
+                            user?.profilePic ||
+                            "https://api.dicebear.com/5.x/initials/svg?seed=" +
+                              (user?.fullName || "user")
+                          }
+                          alt={user?.fullName || "User"}
+                        />
                       </div>
                     </div>
                     <div>

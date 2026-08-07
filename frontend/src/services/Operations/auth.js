@@ -1,12 +1,11 @@
-// import axios from "axios";
 import { toast } from "react-hot-toast";
-import { Loader } from "lucide-react";
 import { setLoading, setToken } from "../../slices/authSlices";
 import { authEndpoints } from "../api";
 import { setUser } from "../../slices/profileSlice";
 import { apiConnector } from "../../lib/axios";
 
-const { SIGNUP_API, LOGIN_API, LOGOUT_API, UPDATE_PROFILE_API } = authEndpoints;
+const { SIGNUP_API, LOGIN_API, LOGOUT_API, UPDATE_PROFILE_API, CHECK_API } =
+  authEndpoints;
 
 // Helper to build a consistent profile image
 const buildUserImage = (user) => {
@@ -45,8 +44,12 @@ export const Signup = (fullName, email, password, navigate) => {
         JSON.stringify({ ...user, image: userImage }),
       );
 
+      // Set token so protected routes are accessible (JWT is in the httpOnly cookie)
+      dispatch(setToken("cookie"));
+      localStorage.setItem("token", "cookie");
+
       toast.success("Account created successfully! Welcome!");
-      navigate("/");
+      navigate("/chat");
     } catch (error) {
       console.log("SIGNUP API ERROR............", error);
       toast.error(error?.response?.data?.message || "Signup Failed");
@@ -88,9 +91,10 @@ export const Login = (email, password, navigate) => {
 
       // Set token as a truthy value for protectedRoute (cookie is the real auth source)
       dispatch(setToken("cookie"));
+      localStorage.setItem("token", "cookie");
 
       toast.success("Logged in successfully.");
-      navigate("/");
+      navigate("/chat");
     } catch (error) {
       console.log("Logged In Error", error);
       toast.error(error?.response?.data?.message || "Logged in failed");
@@ -120,27 +124,30 @@ export const Logout = () => {
 
     // clear client state
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     dispatch(setToken(null));
+    dispatch(setUser(null));
 
     dispatch(setLoading(false));
     toast.dismiss(toastId);
   };
 };
 
-// Kept optional exports for future use
+// Validate session on app load (cookie-based)
 export const checkAuth = () => {
   return async (dispatch) => {
-    // backend route: GET /auth/api/check (cookie-based)
     try {
-      const response = await apiConnector(
-        "GET",
-        "http://localhost:3000/auth/api/check",
-      );
+      const response = await apiConnector("GET", CHECK_API);
       if (response?.data) {
         const user = response.data;
         const userImage = buildUserImage(user);
         dispatch(setUser({ ...user, image: userImage }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...user, image: userImage }),
+        );
         dispatch(setToken("cookie"));
+        localStorage.setItem("token", "cookie");
       }
     } catch (e) {
       dispatch(setToken(null));
@@ -158,7 +165,11 @@ export const updateProfile = (profilePic) => {
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
-      dispatch(setUser(response.data?.updateUser));
+      const updatedUser = response.data?.updateUser;
+      const userImage = buildUserImage(updatedUser);
+      const finalUser = { ...updatedUser, image: userImage };
+      dispatch(setUser(finalUser));
+      localStorage.setItem("user", JSON.stringify(finalUser));
       toast.success("Profile updated successfully.");
     } catch (error) {
       console.log("upload profile error", error);
@@ -168,3 +179,4 @@ export const updateProfile = (profilePic) => {
     }
   };
 };
+

@@ -1,6 +1,7 @@
 const { generateToken } = require('../lib/utils');
 const User=require('../models/userModel');
 const bcrypt=require('bcrypt');
+const cloudinary=require('../lib/cloudinary');
 
 exports.Signup=async(req,res)=>{
     try{

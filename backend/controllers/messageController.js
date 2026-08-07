@@ -1,10 +1,12 @@
 const Message=require('../models/messageModel');
+const User=require('../models/userModel');
+const cloudinary=require('../lib/cloudinary');
 
 
 exports.getUsersForSidebar=async(req,res)=>{
     try{
         const loggedInUsers=req.user._id;
-        const filteredUsers=await Message.find({_id:{$ne:loggedInUsers}}).select("-password");
+        const filteredUsers=await User.find({_id:{$ne:loggedInUsers}}).select("-password");
         return res.status(200).json({
             success:true,
             message:"Users fetched successfully.",
