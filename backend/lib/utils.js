@@ -8,9 +8,10 @@ exports.generateToken=(userId,res)=>{
     res.cookie("token",token,{
         maxAge:7*24*60*60*1000, //MS
         httpOnly:true, //prevent XSS attacks cross site scripting attack
-        // For local dev (localhost:5173 -> localhost:3000), `strict` can prevent the cookie from being sent.
-        sameSite:"lax", // CSRF protection with better dev compatibility
-        secure:process.env.NODE_ENV ==="production"
+        // Production (Vercel frontend -> Render backend) is cross-site, so SameSite must be "none"
+        // and secure:true for the browser to send the cookie on AJAX requests.
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: process.env.NODE_ENV === "production"
 
 
     })

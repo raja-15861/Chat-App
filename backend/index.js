@@ -13,7 +13,13 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({extended:true}));
 app.use(cors({
-    origin:['http://localhost:5173','https://chat-app-one-umber-68.vercel.app'],
+    origin:[
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'https://chat-app-one-umber-68.vercel.app',
+        /^https:\/\/.*\.vercel\.app$/, // allow all Vercel preview/deployment domains
+        /^https:\/\/.*\.onrender\.com$/
+    ],
     credentials:true
 }));
 
