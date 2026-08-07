@@ -90,7 +90,7 @@ export const Login = (email, password, navigate) => {
       dispatch(setToken("cookie"));
 
       toast.success("Logged in successfully.");
-      navigate("/ ".trim());
+      navigate("/");
     } catch (error) {
       console.log("Logged In Error", error);
       toast.error(error?.response?.data?.message || "Logged in failed");

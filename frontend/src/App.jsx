@@ -7,6 +7,7 @@ import SettingsPage from './pages/SettingsPage';
 import Profile from './pages/Profile';
 import ProtectedRoute from '../routes/protectedRoute';
 import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
 import { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { checkAuth } from './services/Operations/auth';
@@ -22,7 +23,7 @@ function App() {
     <div>
       <Navbar />
       <Routes>
-        <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path='/' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path='/signup' element={<SignupPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/settings' element={<SettingsPage />} />
